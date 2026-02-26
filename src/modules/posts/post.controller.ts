@@ -72,3 +72,17 @@ export const deletePost = async (
     next(error);
   }
 };
+
+export const updatePost = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { content } = req.body as { content: string };
+    const post = await postService.updatePost(req.params.id, req.user.id, content);
+    sendSuccess(res, 'Post updated successfully', post, HTTP_STATUS.OK);
+  } catch (error) {
+    next(error);
+  }
+};

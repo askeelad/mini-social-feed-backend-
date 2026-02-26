@@ -49,3 +49,19 @@ export const deletePost = async (postId: string, userId: string): Promise<void> 
   }
   await postRepository.delete(postId);
 };
+
+export const updatePost = async (
+  postId: string,
+  userId: string,
+  content: string,
+): Promise<Post> => {
+  const post = await postRepository.findOne({ where: { id: postId } });
+  if (!post) {
+    throw new AppError(ERROR_MESSAGES.POST.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+  }
+  if (post.author_id !== userId) {
+    throw new AppError(ERROR_MESSAGES.POST.NOT_OWNER, HTTP_STATUS.FORBIDDEN);
+  }
+
+  return postRepository.updatePost(postId, content);
+};

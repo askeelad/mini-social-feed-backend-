@@ -4,7 +4,12 @@ import * as likeController from '../likes/like.controller';
 import * as commentController from '../comments/comment.controller';
 import { validate } from '../../middlewares/validate.middleware';
 import { requireAuth } from '../../middlewares/auth.middleware';
-import { createPostSchema, getPostsQuerySchema, searchPostsQuerySchema } from './post.schema';
+import {
+  createPostSchema,
+  getPostsQuerySchema,
+  searchPostsQuerySchema,
+  updatePostSchema,
+} from './post.schema';
 import { createCommentSchema } from '../comments/comment.schema';
 import { AuthenticatedRequest } from '../../types/request.types';
 
@@ -146,6 +151,40 @@ router.get('/:id', auth, (req, res, next) => {
  */
 router.delete('/:id', auth, (req, res, next) => {
   void postController.deletePost(req as AuthenticatedRequest, res, next);
+});
+
+// Update post
+/**
+ * @swagger
+ * /posts/{id}:
+ *   patch:
+ *     tags: [Posts]
+ *     summary: Update a post
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [content]
+ *             properties:
+ *               content:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Post updated successfully
+ */
+router.patch('/:id', auth, validate(updatePostSchema), (req, res, next) => {
+  void postController.updatePost(req as AuthenticatedRequest, res, next);
 });
 
 // Like / unlike

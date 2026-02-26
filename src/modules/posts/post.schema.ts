@@ -9,6 +9,15 @@ export const createPostSchema = z.object({
   }),
 });
 
+export const updatePostSchema = z.object({
+  body: z.object({
+    content: z
+      .string()
+      .min(1, 'Post content cannot be empty')
+      .max(500, 'Post content must not exceed 500 characters'),
+  }),
+});
+
 export const getPostsQuerySchema = z.object({
   query: z.object({
     page: z.string().optional(),

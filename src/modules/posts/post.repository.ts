@@ -83,6 +83,11 @@ export const postRepository = AppDataSource.getRepository(Post).extend({
     return this.save(post);
   },
 
+  async updatePost(id: string, content: string): Promise<Post> {
+    await this.update(id, { content });
+    return this.findById(id) as Promise<Post>;
+  },
+
   async incrementLikes(postId: string): Promise<void> {
     await this.increment({ id: postId }, 'likes_count', 1);
   },

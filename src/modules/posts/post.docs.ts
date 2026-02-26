@@ -150,6 +150,40 @@
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  *
+ *   patch:
+ *     summary: Update own post
+ *     tags: [Posts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [content]
+ *             properties:
+ *               content:
+ *                 type: string
+ *                 maxLength: 500
+ *                 example: Updated post content!
+ *     responses:
+ *       200:
+ *         description: Post updated
+ *       403:
+ *         description: Not the post owner
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       422:
+ *         $ref: '#/components/responses/ValidationError'
+ *
  *   delete:
  *     summary: Delete own post
  *     tags: [Posts]
