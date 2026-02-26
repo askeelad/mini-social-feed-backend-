@@ -37,9 +37,10 @@ export const connectRedis = async (): Promise<void> => {
         del: async (key: string) => {
           await upstash.del(key);
         },
-        quit: async () => {
+        quit: () => {
           // Upstash is stateless HTTP, no TCP connection to close
           logger.info('Upstash Redis stateless client closed.');
+          return Promise.resolve();
         },
       };
 
