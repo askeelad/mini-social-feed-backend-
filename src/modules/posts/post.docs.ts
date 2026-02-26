@@ -99,6 +99,38 @@
 
 /**
  * @swagger
+ * /posts/search:
+ *   get:
+ *     summary: Search posts by regex/partial match
+ *     tags: [Posts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The search string to match against post content or usernames
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: Search results fetched
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+
+/**
+ * @swagger
  * /posts/{id}:
  *   get:
  *     summary: Get a single post

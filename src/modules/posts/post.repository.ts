@@ -32,6 +32,35 @@ export const postRepository = AppDataSource.getRepository(Post).extend({
     return qb.getManyAndCount();
   },
 
+  async searchPosts(options: {
+    page: number;
+    limit: number;
+    skip: number;
+    query: string;
+  }): Promise<[Post[], number]> {
+    const qb = this.createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .select([
+        'post.id',
+        'post.content',
+        'post.likes_count',
+        'post.comments_count',
+        'post.created_at',
+        'post.updated_at',
+        'author.id',
+        'author.username',
+        'author.email',
+      ])
+      .where('post.content ILIKE :query OR author.username ILIKE :query', {
+        query: `%${options.query}%`,
+      })
+      .orderBy('post.created_at', 'DESC')
+      .skip(options.skip)
+      .take(options.limit);
+
+    return qb.getManyAndCount();
+  },
+
   async findById(id: string): Promise<Post | null> {
     return this.createQueryBuilder('post')
       .leftJoinAndSelect('post.author', 'author')

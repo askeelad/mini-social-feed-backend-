@@ -17,4 +17,12 @@ export const getPostsQuerySchema = z.object({
   }),
 });
 
+export const searchPostsQuerySchema = z.object({
+  query: z.object({
+    q: z.string().min(1, 'Search query cannot be empty'),
+    page: z.string().optional(),
+    limit: z.string().optional(),
+  }),
+});
+
 export type CreatePostInput = z.infer<typeof createPostSchema>['body'];

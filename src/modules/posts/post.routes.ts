@@ -4,7 +4,7 @@ import * as likeController from '../likes/like.controller';
 import * as commentController from '../comments/comment.controller';
 import { validate } from '../../middlewares/validate.middleware';
 import { requireAuth } from '../../middlewares/auth.middleware';
-import { createPostSchema, getPostsQuerySchema } from './post.schema';
+import { createPostSchema, getPostsQuerySchema, searchPostsQuerySchema } from './post.schema';
 import { createCommentSchema } from '../comments/comment.schema';
 import { AuthenticatedRequest } from '../../types/request.types';
 
@@ -67,6 +67,37 @@ router.get('/', auth, validate(getPostsQuerySchema), (req, res, next) => {
  */
 router.post('/', auth, validate(createPostSchema), (req, res, next) => {
   void postController.createPost(req as AuthenticatedRequest, res, next);
+});
+
+// Search posts
+/**
+ * @swagger
+ * /posts/search:
+ *   get:
+ *     tags: [Posts]
+ *     summary: Search posts by content or username
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Search results retrieved successfully
+ */
+router.get('/search', auth, validate(searchPostsQuerySchema), (req, res, next) => {
+  void postController.searchPosts(req as AuthenticatedRequest, res, next);
 });
 
 // Single post

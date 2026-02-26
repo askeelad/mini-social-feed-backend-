@@ -20,6 +20,17 @@ export const getFeed = async (
   return { posts, meta };
 };
 
+export const searchPosts = async (
+  query: string,
+  rawPage?: string,
+  rawLimit?: string,
+): Promise<{ posts: Post[]; meta: ReturnType<typeof buildPaginationMeta> }> => {
+  const { page, limit, skip } = parsePagination(rawPage, rawLimit);
+  const [posts, total] = await postRepository.searchPosts({ page, limit, skip, query });
+  const meta = buildPaginationMeta(total, page, limit);
+  return { posts, meta };
+};
+
 export const getPostById = async (id: string): Promise<Post> => {
   const post = await postRepository.findById(id);
   if (!post) {

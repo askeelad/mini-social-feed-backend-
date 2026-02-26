@@ -32,6 +32,21 @@ export const getFeed = async (
   }
 };
 
+export const searchPosts = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { q, page, limit } = req.query as Record<string, string | undefined>;
+    // 'q' is guaranteed to be a string by zod validation
+    const { posts, meta } = await postService.searchPosts(q!, page, limit);
+    sendSuccess(res, SUCCESS_MESSAGES.POST.FETCHED, posts, HTTP_STATUS.OK, meta);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getPostById = async (
   req: AuthenticatedRequest,
   res: Response,

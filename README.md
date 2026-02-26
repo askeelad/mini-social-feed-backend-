@@ -35,6 +35,9 @@ The easiest way to get the entire backend running is using Docker Compose. This 
    cp .env.example .env
    ```
 
+   | `GET` | `/api/v1/posts` | Get feed |
+   | `GET` | `/api/v1/posts/search` | Search posts |
+   | `POST` | `/api/v1/posts` | Create post |
    **Important**: To enable Push Notifications, you must fill out the `FIREBASE_PROJECT_ID`, `FIREBASE_PRIVATE_KEY`, and `FIREBASE_CLIENT_EMAIL` variables using your Firebase Service Account JSON credentials.
 
 2. **Start the Containers**
