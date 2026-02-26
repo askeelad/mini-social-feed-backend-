@@ -1,0 +1,80 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: social-feed-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      REDIS_HOST: redis
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - social-feed-network
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: social-feed-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-feeduser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-feedpass}
+      POSTGRES_DB: ${DB_NAME:-social_feed}
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-feeduser} -d ${DB_NAME:-social_feed}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - social-feed-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: social-feed-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - social-feed-network
+
+  adminer:
+    image: adminer:latest
+    container_name: social-feed-adminer
+    restart: unless-stopped
+    ports:
+      - '8083:8080'
+    depends_on:
+      - postgres
+    networks:
+      - social-feed-network
+
+volumes:
+  pgdata:
+  redis_data:
+
+networks:
+  social-feed-network:
+    driver: bridge
